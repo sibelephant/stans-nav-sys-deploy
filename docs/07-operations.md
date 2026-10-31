@@ -2,6 +2,17 @@
 
 ## Health Checks
 
+The live API and database can be checked through Compose:
+
+```bash
+curl --fail http://localhost:8080/api/health
+docker compose -f docker-compose.prod.yml ps
+```
+
+PostgreSQL data lives in the `stans-nav-sys-deploy_stans-postgres-data` volume. Back it up before maintenance and do not use `docker compose down -v` unless the database can be recreated.
+
+The API uses PostgreSQL `LISTEN/NOTIFY` to publish graph/editor invalidation events through `/api/events`; clients refetch current rows through REST.
+
 The container health check requests:
 
 ```text

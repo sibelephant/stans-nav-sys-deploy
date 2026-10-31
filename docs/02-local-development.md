@@ -17,6 +17,14 @@ npm --version
 docker --version
 ```
 
+For live API development, PostgreSQL is provided by Compose:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build postgres api
+```
+
+Copy `.env.example` to `.env` and set matching local credentials before starting Compose. Set `SEED_DATABASE=true` only when you want the demo records loaded.
+
 ## Install Dependencies
 
 The package lives under `services/web`, not at the repository root:
@@ -36,6 +44,8 @@ npm run dev
 ```
 
 Vite normally opens the application at `http://localhost:5173`.
+
+Vite proxies `/api` to the API at `http://localhost:3000`.
 
 Stop the server with `Ctrl+C`.
 

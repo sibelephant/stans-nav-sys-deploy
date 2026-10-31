@@ -24,10 +24,15 @@ export function EditorPage() {
   const [data, setData] = useState<EditorData | null>(null);
   const [state, setState] = useState<ViewState>("data");
   useEffect(() => {
-    api
-      .getEditor()
-      .then(setData)
-      .catch(() => setState("error"));
+    const load = () =>
+      api
+        .getEditor()
+        .then(setData)
+        .catch(() => setState("error"));
+    load();
+    return api.subscribeToChanges((table) => {
+      if (["nodes", "templates"].includes(table)) load();
+    });
   }, []);
   return (
     <>

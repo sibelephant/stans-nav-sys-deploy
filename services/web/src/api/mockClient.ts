@@ -35,4 +35,5 @@ export const mockClient: ApiClient = {
       { status: "ok", services: ["stans-web"] },
       { status: "ok", services: [] },
     ),
+  subscribeToChanges: () => () => undefined,
 };

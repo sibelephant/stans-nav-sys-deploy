@@ -17,10 +17,15 @@ export function WorkspacePage() {
   const [data, setData] = useState<WorkspaceData | null>(null);
   const [state, setState] = useState<ViewState>("data");
   useEffect(() => {
-    api
-      .getWorkspace()
-      .then(setData)
-      .catch(() => setState("error"));
+    const load = () =>
+      api
+        .getWorkspace()
+        .then(setData)
+        .catch(() => setState("error"));
+    load();
+    return api.subscribeToChanges((table) => {
+      if (["routes", "network_health", "nodes"].includes(table)) load();
+    });
   }, []);
   return (
     <>

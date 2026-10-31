@@ -1,6 +1,6 @@
 # STANS Navigation System
 
-STANS (Smart Traffic-Aware Navigation System) is a React and TypeScript traffic-aware navigation interface. It presents route calculations, graph editing tools, algorithm benchmarks, and tutorial content using a mock API client.
+STANS (Smart Traffic-Aware Navigation System) is a React and TypeScript traffic-aware navigation interface. It presents route calculations, graph editing tools, algorithm benchmarks, and tutorial content through a PostgreSQL-backed API with live graph refresh events.
 
 This repository also contains the deployment setup for running the frontend as a containerized static application behind Nginx.
 
@@ -13,6 +13,7 @@ See the [extensive deployment tutorial](docs/README.md) for a guided learning pa
 ```text
 .
 ├── services/web/          React, TypeScript, and Vite application
+├── services/api/          Node, TypeScript, PostgreSQL, and SSE API
 ├── nginx/                 Nginx configuration for the container
 ├── deploy/                Production server and TLS instructions
 ├── Dockerfile             Multi-stage production image
@@ -72,6 +73,14 @@ docker run --rm -p 8080:80 stans-app
 
 Open `http://localhost:8080`. Nginx serves the compiled frontend, supports client-side route fallback through `index.html`, and exposes `GET /health` for container health checks.
 
+Run the complete live stack with PostgreSQL:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
+```
+
+The API is available through the frontend origin at `/api/*`. The API publishes `/api/events` as an SSE stream, and PostgreSQL data is stored in the `stans-postgres-data` volume.
+
 ## CI/CD
 
 The workflow at `.github/workflows/deploy.yml`:
@@ -96,8 +105,10 @@ The host Nginx server terminates HTTPS and proxies requests to the container. Se
 
 ## Configuration Notes
 
-- The current frontend uses mock data through `services/web/src/api/mockClient.ts`.
-- No production backend service is included in this repository.
+- The production frontend uses the Fastify API through `services/web/src/api/index.ts`. The mock client remains available for isolated preview tests.
+- API startup applies the schema. Demo seed data is opt-in with `SEED_DATABASE=true`; set `POSTGRES_PASSWORD` and `DATABASE_URL` through the deployment environment instead of using defaults in production.
+- The first live milestone is read-only persistence plus graph/editor refresh. Authentication, write endpoints, and collaborative presence are not included yet.
+- The API enables structured logging, Helmet security headers, request rate limiting, a 1 MiB request limit, database TLS configuration, and non-root read-only container execution.
 - Do not commit registry tokens, SSH private keys, or other credentials.
 - Keep only ports 22, 80, and 443 open on a production server.
 

@@ -61,4 +61,5 @@ export interface ApiClient {
   getInsights(): Promise<InsightsData>;
   getCurrentUser(): Promise<User>;
   getHealth(): Promise<{ status: "ok"; services: string[] }>;
+  subscribeToChanges(onChange: (table: string) => void): () => void;
 }

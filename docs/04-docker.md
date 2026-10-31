@@ -9,6 +9,10 @@ The Dockerfile has two stages:
 
 The final image does not contain the Node.js toolchain or development dependencies.
 
+The Compose deployment adds a separate Node API container and a private PostgreSQL container with a persistent named volume. Frontend Nginx proxies `/api/` and `/api/events` to the API; SSE buffering is disabled for the event stream.
+
+The API container runs as the non-root `node` user with a read-only filesystem. Compose requires explicit `DATABASE_URL` and `POSTGRES_PASSWORD` values; use `.env.example` as the starting point for local configuration.
+
 ## Build the Image
 
 Run this from the repository root because the Docker build context needs both `services/web` and `nginx`:
@@ -35,6 +39,12 @@ Test the health endpoint in another terminal:
 
 ```bash
 curl --fail http://localhost:8080/health
+```
+
+Run the full stack with:
+
+```bash
+docker compose -f docker-compose.prod.yml up --build
 ```
 
 Expected output:

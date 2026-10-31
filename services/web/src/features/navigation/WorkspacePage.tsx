@@ -15,13 +15,20 @@ import { Hero } from "../../components/Hero";
 
 export function WorkspacePage() {
   const [data, setData] = useState<WorkspaceData | null>(null);
-  const [state, setState] = useState<ViewState>("data");
-  useEffect(() => {
+  const [state, setState] = useState<ViewState>("loading");
+
+  const loadWorkspace = () => {
+    setState("loading");
     api
       .getWorkspace()
-      .then(setData)
+      .then((nextData) => {
+        setData(nextData);
+        setState(nextData.routes.length || nextData.health.length ? "data" : "empty");
+      })
       .catch(() => setState("error"));
-  }, []);
+  };
+
+  useEffect(loadWorkspace, []);
   return (
     <>
       <Hero
@@ -30,17 +37,19 @@ export function WorkspacePage() {
         subtitle="Calculate traffic-aware routes, inspect path decisions, and compare algorithm output against a consistent city network snapshot."
         primary="Calculate a named route"
         secondary="Compare algorithms"
+        primaryTo="#route-table"
+        secondaryTo="#network-health"
       />
-      <section className="two-column" id="route-table">
-        <div>
-          <div className="section-title">
-            <Title2>
+      <section className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] gap-5" id="route-table">
+        <div id="network-health">
+          <div className="flex items-baseline justify-between gap-3 mb-2.5">
+            <Title2 className="inline-flex items-center gap-2">
               <RouterRegular /> Recent route calculations
             </Title2>
-            <Caption1>Traffic weights enabled</Caption1>
+            <Caption1 className="text-[var(--colorNeutralForeground3)]">Traffic weights enabled</Caption1>
           </div>
-          <DataState state={state} onRetry={() => setState("data")}>
-            <Card className="table-card">
+          <DataState state={state} onRetry={loadWorkspace}>
+            <Card className="p-4 overflow-x-auto">
               {data?.routes.map((route) => (
                 <CardHeader
                   key={`${route.origin}-${route.destination}`}
@@ -65,15 +74,15 @@ export function WorkspacePage() {
           </DataState>
         </div>
         <div>
-          <div className="section-title">
-            <Title2>
+          <div className="flex items-baseline justify-between gap-3 mb-2.5">
+            <Title2 className="inline-flex items-center gap-2">
               <ShieldCheckmarkRegular /> Network health
             </Title2>
-            <Caption1>Current graph snapshot</Caption1>
+            <Caption1 className="text-[var(--colorNeutralForeground3)]">Current graph snapshot</Caption1>
           </div>
-          <div className="stack">
+          <div className="grid gap-3">
             {data?.health.map((item) => (
-              <Card key={item.title}>
+              <Card key={item.title} className="p-3.5">
                 <CardHeader
                   header={
                     <Badge
@@ -83,16 +92,13 @@ export function WorkspacePage() {
                     </Badge>
                   }
                 />
-                <Title2>{item.title}</Title2>
+                <Title2 className="my-[7px]">{item.title}</Title2>
                 <Body1>{item.body}</Body1>
               </Card>
             ))}
           </div>
         </div>
       </section>
-      <Button appearance="primary" icon={<RouterRegular />}>
-        Run route calculation
-      </Button>
     </>
   );
 }

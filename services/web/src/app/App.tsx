@@ -60,7 +60,7 @@ export function App() {
     [isDark],
   );
   return (
-    <FluentProvider theme={theme} className="app-provider">
+    <FluentProvider theme={theme} className="min-h-screen">
       <Shell
         dark={isDark}
         onToggleTheme={() => setMode(isDark ? "light" : "dark")}

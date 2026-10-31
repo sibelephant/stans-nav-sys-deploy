@@ -15,13 +15,21 @@ import { Hero } from "../../components/Hero";
 
 export function InsightsPage() {
   const [data, setData] = useState<InsightsData | null>(null);
-  const [state, setState] = useState<ViewState>("data");
-  useEffect(() => {
+  const [state, setState] = useState<ViewState>("loading");
+  const [activeLesson, setActiveLesson] = useState<string | null>(null);
+
+  const loadInsights = () => {
+    setState("loading");
     api
       .getInsights()
-      .then(setData)
+      .then((nextData) => {
+        setData(nextData);
+        setState(nextData.benchmarks.length || nextData.tutorials.length ? "data" : "empty");
+      })
       .catch(() => setState("error"));
-  }, []);
+  };
+
+  useEffect(loadInsights, []);
   return (
     <>
       <Hero
@@ -30,18 +38,20 @@ export function InsightsPage() {
         subtitle="Review how STANS weighs traffic, chooses routes, and turns graph theory into dependable navigation decisions."
         primary="Start a guided lesson"
         secondary="View benchmark table"
+        primaryTo="#tutorials"
+        secondaryTo="#benchmarks"
       />
       <section id="benchmarks">
-        <div className="section-title">
-          <Title2>
+        <div className="flex items-baseline justify-between gap-3 mb-2.5">
+          <Title2 className="inline-flex items-center gap-2">
             <ChartMultipleRegular /> Algorithm benchmark
           </Title2>
-          <Caption1>Median across the current city graph</Caption1>
+          <Caption1 className="text-[var(--colorNeutralForeground3)]">Median across the current city graph</Caption1>
         </div>
-        <DataState state={state} onRetry={() => setState("data")}>
-          <div className="card-grid">
+        <DataState state={state} onRetry={loadInsights}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {data?.benchmarks.map((item) => (
-              <Card key={item.algorithm}>
+              <Card key={item.algorithm} className="grid gap-3 p-4">
                 <CardHeader
                   header={<Title2>{item.algorithm}</Title2>}
                   description={item.detail}
@@ -66,20 +76,28 @@ export function InsightsPage() {
         </DataState>
       </section>
       <section id="tutorials">
-        <div className="section-title">
-          <Title2>
+        <div className="flex items-baseline justify-between gap-3 mb-2.5">
+          <Title2 className="inline-flex items-center gap-2">
             <ClockRegular /> Guided lessons
           </Title2>
         </div>
-        <div className="card-grid">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {data?.tutorials.map((lesson) => (
-            <Card key={lesson.title}>
+            <Card key={lesson.title} className="grid gap-3 p-4">
+              <img
+                className="w-full h-[110px] object-cover rounded-md"
+                src={lesson.image}
+                alt={lesson.title}
+                loading="lazy"
+              />
               <Badge>
                 {lesson.lesson} · {lesson.duration}
               </Badge>
               <Title2>{lesson.title}</Title2>
               <Body1>{lesson.description}</Body1>
-              <Button appearance="secondary">Open guided lesson</Button>
+              <Button appearance="secondary" onClick={() => setActiveLesson(lesson.title)}>
+                {activeLesson === lesson.title ? "Lesson selected" : "Open guided lesson"}
+              </Button>
             </Card>
           ))}
         </div>

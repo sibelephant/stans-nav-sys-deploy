@@ -10,11 +10,3 @@ export function getPreviewState(): ViewState {
     ? (value as ViewState)
     : "data";
 }
-
-export function setPreviewState(state: ViewState): void {
-  localStorage.setItem("previewState", state);
-  const url = new URL(window.location.href);
-  url.searchParams.set("previewState", state);
-  window.history.replaceState({}, "", url);
-  window.dispatchEvent(new Event("preview-state-change"));
-}

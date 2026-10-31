@@ -43,21 +43,21 @@ export function Shell({ children, dark, onToggleTheme }: ShellProps) {
   const location = useLocation();
   const navigate = useNavigate();
   return (
-    <div className="app-shell">
-      <header className="app-header">
-        <Toolbar>
-          <Link className="brand" to="/">
-            <span className="brand-mark">S</span>
+    <div className="min-h-screen flex flex-col bg-[var(--colorNeutralBackground2)]">
+      <header className="bg-[var(--colorNeutralBackground1)] border-b border-[var(--colorNeutralStroke2)]">
+        <Toolbar className="px-[clamp(16px,4vw,42px)]! min-h-14! py-[9px]!">
+          <Link className="flex items-center gap-2.5 text-inherit no-underline" to="/">
+            <span className="grid place-items-center w-[30px] h-[30px] rounded-md font-bold text-white bg-[#087e8b]">S</span>
             <span>
               <Subtitle1>STANS</Subtitle1>
-              <Caption1>/ traffic-aware navigation</Caption1>
+              <Caption1 className="ml-1.5 text-[var(--colorNeutralForeground3)]">/ traffic-aware navigation</Caption1>
             </span>
           </Link>
-          <span className="toolbar-spacer" />
+          <span className="flex-1" />
           <Badge
             appearance="tint"
             color="success"
-            icon={<span className="status-dot" />}
+            icon={<span className="w-1.5 h-1.5 rounded-full inline-block bg-current" />}
           >
             Graph online
           </Badge>
@@ -74,7 +74,7 @@ export function Shell({ children, dark, onToggleTheme }: ShellProps) {
           <Avatar name="Route lab" size={28} />
         </Toolbar>
       </header>
-      <nav className="app-nav">
+      <nav className="flex items-center justify-between gap-3 overflow-x-auto px-[clamp(16px,4vw,42px)] py-1 bg-[var(--colorNeutralBackground1)] border-b border-[var(--colorNeutralStroke2)]">
         <TabList selectedValue={location.pathname} appearance="subtle">
           {navItems.map((item) => (
             <Tab
@@ -87,18 +87,18 @@ export function Shell({ children, dark, onToggleTheme }: ShellProps) {
             </Tab>
           ))}
         </TabList>
-        <span className="nav-meta">
+        <span className="hidden sm:inline-flex gap-[7px] items-center whitespace-nowrap text-[11px] text-[var(--colorNeutralForeground3)]">
           <AppsRegular /> active city graph v2026.10
         </span>
       </nav>
-      <main className="app-main">{children}</main>
-      <footer className="app-footer">
+      <main className="w-full max-w-[1240px] mx-auto grid gap-5 sm:gap-7 px-[clamp(16px,4vw,42px)] pt-[18px] sm:pt-[30px] pb-[30px]">{children}</main>
+      <footer className="px-[clamp(16px,4vw,42px)] pb-5 text-[var(--colorNeutralForeground3)]">
         <Divider />
-        <div>
+        <div className="flex flex-col sm:flex-row justify-between gap-3 pt-3">
           <Body1>
             STANS route lab · weights: travel time + live congestion
           </Body1>
-          <Caption1>
+          <Caption1 className="inline-flex items-center gap-1.5">
             <WeatherSunnyRegular /> Autosave on · graph snapshot 2026.10.29
           </Caption1>
         </div>
@@ -110,24 +110,24 @@ export function Shell({ children, dark, onToggleTheme }: ShellProps) {
 
 function DevStateSwitch() {
   return (
-    <div className="dev-switch">
-      <span>Preview state</span>
+    <div className="fixed left-2.5 right-2.5 sm:left-auto sm:right-3 bottom-3 z-5 flex items-center justify-between sm:justify-start gap-1 rounded-md text-[11px] px-1.5 py-1 bg-[var(--colorNeutralBackground1)] border border-[var(--colorNeutralStroke2)] shadow-[var(--shadow-float)]">
+      <span className="px-1.5 text-[var(--colorNeutralForeground3)]">Preview state</span>
       <Button
         size="small"
         appearance="subtle"
         icon={<HomeRegular />}
         as="a"
-        href="?state=data"
+        href="?previewState=data"
       >
         data
       </Button>
-      <Button size="small" appearance="subtle" as="a" href="?state=loading">
+      <Button size="small" appearance="subtle" as="a" href="?previewState=loading">
         loading
       </Button>
-      <Button size="small" appearance="subtle" as="a" href="?state=error">
+      <Button size="small" appearance="subtle" as="a" href="?previewState=error">
         error
       </Button>
-      <Button size="small" appearance="subtle" as="a" href="?state=empty">
+      <Button size="small" appearance="subtle" as="a" href="?previewState=empty">
         empty
       </Button>
     </div>

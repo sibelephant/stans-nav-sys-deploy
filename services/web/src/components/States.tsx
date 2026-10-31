@@ -29,7 +29,7 @@ export function DataState({
 }) {
   if (state === "loading")
     return (
-      <div className="state-stack" aria-label="Loading data">
+      <div className="grid gap-3" aria-label="Loading data">
         <Skeleton>
           <SkeletonItem size={24} />
           <SkeletonItem size={16} />
@@ -60,8 +60,8 @@ export function DataState({
     );
   if (state === "empty")
     return (
-      <Card className="empty-state">
-        <BoxRegular className="empty-icon" />
+      <Card className="grid justify-items-center gap-3 text-center py-[42px] px-[18px]">
+        <BoxRegular className="w-16 h-16 text-[#087e8b]" />
         <Title3>No route records yet</Title3>
         <Body1>Run a calculation to create the first route comparison.</Body1>
         <Button appearance="primary" icon={<DatabaseSearchRegular />}>

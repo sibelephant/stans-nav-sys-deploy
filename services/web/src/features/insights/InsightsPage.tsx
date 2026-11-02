@@ -41,17 +41,17 @@ export function InsightsPage() {
         primaryTo="#tutorials"
         secondaryTo="#benchmarks"
       />
-      <section id="benchmarks">
-        <div className="flex items-baseline justify-between gap-3 mb-2.5">
-          <Title2 className="inline-flex items-center gap-2">
+      <section id="comparison">
+        <div className="section-title" id="benchmarks">
+          <Title2>
             <ChartMultipleRegular /> Algorithm benchmark
           </Title2>
-          <Caption1 className="text-[var(--colorNeutralForeground3)]">Median across the current city graph</Caption1>
+          <Caption1>Median across the current city graph</Caption1>
         </div>
         <DataState state={state} onRetry={loadInsights}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="card-grid">
             {data?.benchmarks.map((item) => (
-              <Card key={item.algorithm} className="grid gap-3 p-4">
+              <Card key={item.algorithm}>
                 <CardHeader
                   header={<Title2>{item.algorithm}</Title2>}
                   description={item.detail}
@@ -76,20 +76,14 @@ export function InsightsPage() {
         </DataState>
       </section>
       <section id="tutorials">
-        <div className="flex items-baseline justify-between gap-3 mb-2.5">
-          <Title2 className="inline-flex items-center gap-2">
+        <div className="section-title">
+          <Title2>
             <ClockRegular /> Guided lessons
           </Title2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="card-grid">
           {data?.tutorials.map((lesson) => (
-            <Card key={lesson.title} className="grid gap-3 p-4">
-              <img
-                className="w-full h-[110px] object-cover rounded-md"
-                src={lesson.image}
-                alt={lesson.title}
-                loading="lazy"
-              />
+            <Card key={lesson.title}>
               <Badge>
                 {lesson.lesson} · {lesson.duration}
               </Badge>

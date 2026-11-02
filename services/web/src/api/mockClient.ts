@@ -14,11 +14,12 @@ import type {
 
 async function resolve<T>(data: T, empty: T): Promise<T> {
   const state = getPreviewState();
-  if (state === "loading") return new Promise<T>(() => undefined);
   if (state === "error")
     throw new Error("The STANS data stream is temporarily unavailable.");
   if (state === "empty") return empty;
-  await new Promise((resolvePromise) => window.setTimeout(resolvePromise, 180));
+  await new Promise((resolvePromise) =>
+    window.setTimeout(resolvePromise, state === "loading" ? 700 : 180),
+  );
   return data;
 }
 
